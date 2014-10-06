@@ -24,17 +24,17 @@ import android.widget.TextView;
 public class MainActivity extends Activity {
 
     // List of NFC technologies.
-    private final String[][] techList = new String[][] {
-        new String[] {
-            NfcA.class.getName(),
-            NfcB.class.getName(),
-            NfcF.class.getName(),
-            NfcV.class.getName(),
-            IsoDep.class.getName(),
-            MifareClassic.class.getName(),
-            MifareUltralight.class.getName(),
-            Ndef.class.getName()
-        }
+    private final String[][] techList = new String[][]{
+            new String[]{
+                    NfcA.class.getName(),
+                    NfcB.class.getName(),
+                    NfcF.class.getName(),
+                    NfcV.class.getName(),
+                    IsoDep.class.getName(),
+                    MifareClassic.class.getName(),
+                    MifareUltralight.class.getName(),
+                    Ndef.class.getName()
+            }
     };
 
     @Override
@@ -70,7 +70,7 @@ public class MainActivity extends Activity {
     protected void onNewIntent(Intent intent) {
         if (intent.getAction().equals(NfcAdapter.ACTION_TAG_DISCOVERED)) {
             String tag = bytesToHex(intent.getByteArrayExtra(NfcAdapter.EXTRA_ID));
-            ((TextView)findViewById(R.id.text)).setText("NFC Tag: " + tag);
+            ((TextView) findViewById(R.id.text)).setText("NFC Tag: " + tag);
         }
     }
 
@@ -101,9 +101,6 @@ public class MainActivity extends Activity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        return id == R.id.action_settings || super.onOptionsItemSelected(item);
     }
 }
