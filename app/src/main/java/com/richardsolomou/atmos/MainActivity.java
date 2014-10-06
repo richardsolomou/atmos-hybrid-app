@@ -25,16 +25,16 @@ public class MainActivity extends Activity {
 
     // List of NFC technologies.
     private final String[][] techList = new String[][]{
-            new String[]{
-                    NfcA.class.getName(),
-                    NfcB.class.getName(),
-                    NfcF.class.getName(),
-                    NfcV.class.getName(),
-                    IsoDep.class.getName(),
-                    MifareClassic.class.getName(),
-                    MifareUltralight.class.getName(),
-                    Ndef.class.getName()
-            }
+        new String[]{
+            NfcA.class.getName(),
+            NfcB.class.getName(),
+            NfcF.class.getName(),
+            NfcV.class.getName(),
+            IsoDep.class.getName(),
+            MifareClassic.class.getName(),
+            MifareUltralight.class.getName(),
+            Ndef.class.getName()
+        }
     };
 
     @Override
