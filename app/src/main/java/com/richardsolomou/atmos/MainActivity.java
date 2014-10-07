@@ -70,7 +70,7 @@ public class MainActivity extends Activity {
     protected void onNewIntent(Intent intent) {
         if (intent.getAction().equals(NfcAdapter.ACTION_TAG_DISCOVERED)) {
             String tag = bytesToHex(intent.getByteArrayExtra(NfcAdapter.EXTRA_ID));
-            ((TextView) findViewById(R.id.text)).setText("NFC Tag: " + tag);
+            ((TextView) findViewById(R.id.tag)).setText(tag);
         }
     }
 
