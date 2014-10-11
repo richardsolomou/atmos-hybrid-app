@@ -15,7 +15,7 @@
         android:layout_height="wrap_content" />
 
     <TextView
-        android:id="@+id/tag"
+        android:id="@+id/card_sn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/text"
