@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.richardsolomou.atmos" >
+          package="com.richardsolomou.atmos">
 
-    <!-- Permission for using NFC hardware -->
-    <uses-permission android:name="android.permission.NFC"/>
+	<!-- Permission for using NFC hardware -->
+	<uses-permission android:name="android.permission.NFC"/>
 
-    <!-- Forcing device to have NFC hardware -->
-    <uses-feature
-        android:name="android.hardware.nfc"
-        android:required="true"/>
+	<!-- Forcing device to have NFC hardware -->
+	<uses-feature
+		android:name="android.hardware.nfc"
+		android:required="true"/>
 
-    <application
-        android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
-        <activity
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:name=".MainActivity"
-            android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+	<application
+		android:allowBackup="true"
+		android:icon="@drawable/ic_launcher"
+		android:label="@string/app_name"
+		android:theme="@style/Theme.Atmos">
+		<activity
+			android:configChanges="orientation|keyboardHidden|screenSize"
+			android:name=".MainActivity"
+			android:label="@string/app_name">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN"/>
+				<category android:name="android.intent.category.LAUNCHER"/>
+			</intent-filter>
 
-            <!-- Registering app for receiving NFC's TAG_DISCOVERED intent -->
-            <intent-filter>
-                <action android:name="android.nfc.action.TAG_DISCOVERED"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-        </activity>
-    </application>
+			<!-- Registering app for receiving NFC's TAG_DISCOVERED intent -->
+			<intent-filter>
+				<action android:name="android.nfc.action.TAG_DISCOVERED"/>
+				<category android:name="android.intent.category.DEFAULT"/>
+			</intent-filter>
+		</activity>
+	</application>
 
 </manifest>
