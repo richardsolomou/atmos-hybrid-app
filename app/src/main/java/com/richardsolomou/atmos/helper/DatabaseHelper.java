@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import com.richardsolomou.atmos.model.Student;
 
@@ -18,9 +17,7 @@ import java.util.Locale;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-	private static final String LOG = "DatabaseHelper";
-
-	private static final int DATABASE_VERSION = 3;
+	private static final int DATABASE_VERSION = 4;
 
 	private static final String DATABASE_NAME = "atmos";
 
@@ -35,7 +32,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private static final String KEY_STUDENT_CARD_SN = "card_sn";
 
 	private static final String CREATE_TABLE_STUDENTS = "CREATE TABLE " + TABLE_STUDENTS
-			+ "(" + KEY_ID + " INTEGER PRIMARY KEY," + KEY_STUDENT_NAME + " TEXT,"
+			+ "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_STUDENT_NAME + " TEXT,"
 			+ KEY_STUDENT_ID_NUMBER + " TEXT," + KEY_STUDENT_CARD_SN + " TEXT,"
 			+ KEY_CREATED_AT + " DATETIME," + KEY_UPDATED_AT + " DATETIME" + ")";
 
@@ -59,7 +56,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		SQLiteDatabase database = this.getWritableDatabase();
 
 		ContentValues values = new ContentValues();
-		values.put(KEY_STUDENT_NAME, student.getName());
 		values.put(KEY_STUDENT_ID_NUMBER, student.getIDNumber());
 		values.put(KEY_STUDENT_CARD_SN, student.getCardSN());
 		values.put(KEY_CREATED_AT, student.getCreatedAt());
@@ -140,6 +136,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		for (Student student : students) {
 			deleteStudent(student.getID());
 		}
+	}
+
+	public void resetDB() {
+		SQLiteDatabase database = this.getWritableDatabase();
+		database.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME = '" + TABLE_STUDENTS + "'");
 	}
 
 	public void closeDB() {
