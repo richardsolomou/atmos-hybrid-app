@@ -29,6 +29,7 @@ import com.richardsolomou.atmos.model.Student;
 public class MainActivity extends Activity {
 
 	DatabaseHelper db;
+	TextView card_sn;
 
 	private static final String LOG = "MainActivity";
 
@@ -51,7 +52,7 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		this.db = new DatabaseHelper(getApplicationContext());
+		db = new DatabaseHelper(getApplicationContext());
 	}
 
 	@Override
@@ -66,7 +67,7 @@ public class MainActivity extends Activity {
 		filter.addAction(NfcAdapter.ACTION_TECH_DISCOVERED);
 		// Enable foreground dispatch for getting intent from NFC event.
 		NfcAdapter mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
-		mNfcAdapter.enableForegroundDispatch(this, pendingIntent, new IntentFilter[]{filter}, this.techList);
+		mNfcAdapter.enableForegroundDispatch(this, pendingIntent, new IntentFilter[]{filter}, techList);
 	}
 
 	@Override
@@ -80,19 +81,17 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onNewIntent(Intent intent) {
 		if (intent.getAction().equals(NfcAdapter.ACTION_TAG_DISCOVERED)) {
-			String card_sn = bytesToHex(intent.getByteArrayExtra(NfcAdapter.EXTRA_ID));
-			((TextView) findViewById(R.id.card_sn)).setText(card_sn);
-			Student student = this.db.getStudent(null, card_sn);
+			String cardSN = bytesToHex(intent.getByteArrayExtra(NfcAdapter.EXTRA_ID));
+			card_sn = ((TextView) findViewById(R.id.card_sn));
+			Student student = db.getStudent(null, cardSN);
 
 			if (student != null) {
+				card_sn.setText(cardSN);
 				Log.e(LOG, "Card matched: " + student.getCardSN());
 			} else {
-				student = new Student();
-				student.setCardSN(card_sn);
-				student.setIDNumber("1");
-				student.setCreatedAt(this.db.getDateTime());
-				this.db.createStudent(student);
-				Log.e(LOG, "New card created: " + student.getCardSN());
+				Intent objIntent = new Intent(getApplicationContext(), AddStudent.class);
+				objIntent.putExtra("cardSN", cardSN);
+				startActivity(objIntent);
 			}
 		}
 	}
