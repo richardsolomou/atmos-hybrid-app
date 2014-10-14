@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +21,7 @@ public class AddStudent extends Activity {
 
 	DatabaseHelper db;
 	EditText studentID;
+	Button btnAdd;
 	String cardSN;
 
 	@Override
@@ -28,20 +30,40 @@ public class AddStudent extends Activity {
 		setContentView(R.layout.add_student);
 
 		db = new DatabaseHelper(getApplicationContext());
-		studentID = (EditText) findViewById(R.id.studentID);
+		cardSN = getIntent().getStringExtra("cardSN");
 
-		Bundle extras = getIntent().getExtras();
-		if (extras != null) cardSN = extras.getString("cardSN");
+		studentID = (EditText) findViewById(R.id.studentID);
+		btnAdd = (Button) findViewById(R.id.btnAdd);
 
 		studentID.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 			@Override
 			public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
 				boolean handled = false;
+
 				if (i == EditorInfo.IME_ACTION_DONE) {
-					addStudent(textView);
-					handled = true;
+					String id = studentID.getText().toString();
+
+					if (id == null || id.length() < 8) {
+						studentID.setError("Student ID must be 8 characters or more.");
+					} else {
+						addStudent(textView);
+						handled = true;
+					}
 				}
+
 				return handled;
+			}
+		});
+
+		btnAdd.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				String id = studentID.getText().toString();
+				if (id == null || id.length() < 8) {
+					studentID.setError("Student ID must be 8 characters or more.");
+				} else {
+					addStudent(view);
+				}
 			}
 		});
 	}
