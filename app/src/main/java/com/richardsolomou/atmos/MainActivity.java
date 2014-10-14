@@ -2,7 +2,6 @@ package com.richardsolomou.atmos;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -20,6 +19,7 @@ import android.nfc.tech.NfcB;
 import android.nfc.tech.NfcF;
 import android.nfc.tech.NfcV;
 import android.widget.TextView;
+import android.widget.Toast;
 
 // Database helper and models
 import com.richardsolomou.atmos.helper.DatabaseHelper;
@@ -30,8 +30,6 @@ public class MainActivity extends Activity {
 
 	DatabaseHelper db;
 	TextView card_sn;
-
-	private static final String LOG = "MainActivity";
 
 	// List of NFC technologies.
 	private final String[][] techList = new String[][]{
@@ -53,6 +51,7 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 
 		db = new DatabaseHelper(getApplicationContext());
+		card_sn = ((TextView) findViewById(R.id.card_sn));
 	}
 
 	@Override
@@ -82,12 +81,11 @@ public class MainActivity extends Activity {
 	protected void onNewIntent(Intent intent) {
 		if (intent.getAction().equals(NfcAdapter.ACTION_TAG_DISCOVERED)) {
 			String cardSN = bytesToHex(intent.getByteArrayExtra(NfcAdapter.EXTRA_ID));
-			card_sn = ((TextView) findViewById(R.id.card_sn));
 			Student student = db.getStudent(null, cardSN);
 
 			if (student != null) {
 				card_sn.setText(cardSN);
-				Log.e(LOG, "Card matched: " + student.getCardSN());
+				Toast.makeText(getApplicationContext(), "Student with ID " + student.getStudentID() + " was matched.", Toast.LENGTH_SHORT).show();
 			} else {
 				Intent objIntent = new Intent(getApplicationContext(), AddStudent.class);
 				objIntent.putExtra("cardSN", cardSN);
@@ -125,4 +123,5 @@ public class MainActivity extends Activity {
 		int id = item.getItemId();
 		return id == R.id.action_settings || super.onOptionsItemSelected(item);
 	}
+
 }
