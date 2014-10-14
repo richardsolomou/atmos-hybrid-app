@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -17,7 +19,7 @@ import com.richardsolomou.atmos.model.Student;
 public class AddStudent extends Activity {
 
 	DatabaseHelper db;
-	EditText studentIDNumber;
+	EditText studentID;
 	String cardSN;
 
 	@Override
@@ -26,12 +28,12 @@ public class AddStudent extends Activity {
 		setContentView(R.layout.add_student);
 
 		db = new DatabaseHelper(getApplicationContext());
-		studentIDNumber = (EditText) findViewById(R.id.studentIDNumber);
+		studentID = (EditText) findViewById(R.id.studentID);
 
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) cardSN = extras.getString("cardSN");
 
-		studentIDNumber.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+		studentID.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 			@Override
 			public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
 				boolean handled = false;
@@ -47,9 +49,7 @@ public class AddStudent extends Activity {
 	public void addStudent(View view) {
 		Student student = new Student();
 
-		String studentID = studentIDNumber.getText().toString();
-
-		student.setIDNumber(studentID);
+		student.setStudentID(studentID.getText().toString());
 		student.setCardSN(cardSN);
 		student.setCreatedAt(db.getDateTime());
 		student.setUpdatedAt(db.getDateTime());
@@ -57,7 +57,7 @@ public class AddStudent extends Activity {
 		long student_id = db.createStudent(student);
 
 		if (Long.toString(student_id) != null) {
-			Toast.makeText(getApplicationContext(), "Student " + studentID + " was successfully added to the database.", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), "Student " + studentID.getText().toString() + " was successfully added to the database.", Toast.LENGTH_SHORT).show();
 			Intent objIntent = new Intent(getApplicationContext(), MainActivity.class);
 			startActivity(objIntent);
 		} else {
@@ -69,4 +69,21 @@ public class AddStudent extends Activity {
 		Intent objIntent = new Intent(getApplicationContext(), MainActivity.class);
 		startActivity(objIntent);
 	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle action bar item clicks here. The action bar will
+		// automatically handle clicks on the Home/Up button, so long
+		// as you specify a parent activity in AndroidManifest.xml.
+		int id = item.getItemId();
+		return id == R.id.action_settings || super.onOptionsItemSelected(item);
+	}
+
 }

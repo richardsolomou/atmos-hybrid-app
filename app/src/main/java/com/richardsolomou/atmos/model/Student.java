@@ -3,8 +3,7 @@ package com.richardsolomou.atmos.model;
 public class Student {
 
 	int id;
-	String name;
-	String id_number;
+	String student_id;
 	String card_sn;
 	String created_at;
 	String updated_at;
@@ -12,16 +11,14 @@ public class Student {
 	public Student() {
 	}
 
-	public Student(String name, String id_number, String card_sn) {
-		this.name = name;
-		this.id_number = id_number;
+	public Student(String student_id, String card_sn) {
+		this.student_id = student_id;
 		this.card_sn = card_sn;
 	}
 
-	public Student(int id, String name, String id_number, String card_sn) {
+	public Student(int id, String student_id, String card_sn) {
 		this.id = id;
-		this.name = name;
-		this.id_number = id_number;
+		this.student_id = student_id;
 		this.card_sn = card_sn;
 	}
 
@@ -29,12 +26,8 @@ public class Student {
 		this.id = id;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public void setIDNumber(String id_number) {
-		this.id_number = id_number;
+	public void setStudentID(String student_id) {
+		this.student_id = student_id;
 	}
 
 	public void setCardSN(String card_sn) {
@@ -53,12 +46,8 @@ public class Student {
 		return this.id;
 	}
 
-	public String getName() {
-		return this.name;
-	}
-
-	public String getIDNumber() {
-		return this.id_number;
+	public String getStudentID() {
+		return this.student_id;
 	}
 
 	public String getCardSN() {

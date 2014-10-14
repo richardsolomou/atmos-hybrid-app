@@ -17,7 +17,7 @@ import java.util.Locale;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-	private static final int DATABASE_VERSION = 4;
+	private static final int DATABASE_VERSION = 5;
 
 	private static final String DATABASE_NAME = "atmos";
 
@@ -27,14 +27,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private static final String KEY_CREATED_AT = "created_at";
 	private static final String KEY_UPDATED_AT = "updated_at";
 
-	private static final String KEY_STUDENT_NAME = "name";
-	private static final String KEY_STUDENT_ID_NUMBER = "id_number";
+	private static final String KEY_STUDENT_ID = "student_id";
 	private static final String KEY_STUDENT_CARD_SN = "card_sn";
 
-	private static final String CREATE_TABLE_STUDENTS = "CREATE TABLE " + TABLE_STUDENTS
-			+ "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_STUDENT_NAME + " TEXT,"
-			+ KEY_STUDENT_ID_NUMBER + " TEXT," + KEY_STUDENT_CARD_SN + " TEXT,"
-			+ KEY_CREATED_AT + " DATETIME," + KEY_UPDATED_AT + " DATETIME" + ")";
+	private static final String CREATE_TABLE_STUDENTS = "CREATE TABLE " + TABLE_STUDENTS + "("
+			+ KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_STUDENT_ID + " TEXT,"
+			+ KEY_STUDENT_CARD_SN + " TEXT," + KEY_CREATED_AT + " DATETIME," + KEY_UPDATED_AT
+			+ " DATETIME" + ")";
 
 	public DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -56,7 +55,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		SQLiteDatabase database = this.getWritableDatabase();
 
 		ContentValues values = new ContentValues();
-		values.put(KEY_STUDENT_ID_NUMBER, student.getIDNumber());
+		values.put(KEY_STUDENT_ID, student.getStudentID());
 		values.put(KEY_STUDENT_CARD_SN, student.getCardSN());
 		values.put(KEY_CREATED_AT, student.getCreatedAt());
 		values.put(KEY_UPDATED_AT, student.getUpdatedAt());
@@ -86,8 +85,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		if (cursor.moveToFirst()) {
 			student = new Student();
 			student.setID(cursor.getInt(cursor.getColumnIndex(KEY_ID)));
-			student.setName(cursor.getString(cursor.getColumnIndex(KEY_STUDENT_NAME)));
-			student.setIDNumber(cursor.getString(cursor.getColumnIndex(KEY_STUDENT_ID_NUMBER)));
+			student.setStudentID(cursor.getString(cursor.getColumnIndex(KEY_STUDENT_ID)));
 			student.setCardSN(cursor.getString(cursor.getColumnIndex(KEY_STUDENT_CARD_SN)));
 			student.setCreatedAt(cursor.getString(cursor.getColumnIndex(KEY_CREATED_AT)));
 			student.setUpdatedAt(cursor.getString(cursor.getColumnIndex(KEY_UPDATED_AT)));
@@ -109,8 +107,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			do {
 				Student student = new Student();
 				student.setID(cursor.getInt(cursor.getColumnIndex(KEY_ID)));
-				student.setName(cursor.getString(cursor.getColumnIndex(KEY_STUDENT_NAME)));
-				student.setIDNumber(cursor.getString(cursor.getColumnIndex(KEY_STUDENT_ID_NUMBER)));
+				student.setStudentID(cursor.getString(cursor.getColumnIndex(KEY_STUDENT_ID)));
 				student.setCardSN(cursor.getString(cursor.getColumnIndex(KEY_STUDENT_CARD_SN)));
 				student.setCreatedAt(cursor.getString(cursor.getColumnIndex(KEY_CREATED_AT)));
 				student.setUpdatedAt(cursor.getString(cursor.getColumnIndex(KEY_UPDATED_AT)));
