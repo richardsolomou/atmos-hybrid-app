@@ -30,18 +30,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private static final String KEY_STUDENT_ID = "student_id";
 	private static final String KEY_STUDENT_CARD_SN = "card_sn";
 
-	private static final String CREATE_TABLE_STUDENTS = "CREATE TABLE " + TABLE_STUDENTS + "("
-			+ KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_STUDENT_ID + " TEXT,"
-			+ KEY_STUDENT_CARD_SN + " TEXT," + KEY_CREATED_AT + " DATETIME," + KEY_UPDATED_AT
-			+ " DATETIME" + ")";
-
 	public DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
 
 	@Override
 	public void onCreate(SQLiteDatabase database) {
-		database.execSQL(CREATE_TABLE_STUDENTS);
+		database.execSQL("CREATE TABLE " + TABLE_STUDENTS + "(" + KEY_ID
+				+ " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_STUDENT_ID + " TEXT,"
+				+ KEY_STUDENT_CARD_SN + " TEXT," + KEY_CREATED_AT + " DATETIME," + KEY_UPDATED_AT
+				+ " DATETIME" + ")");
 	}
 
 	@Override
@@ -51,25 +49,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		onCreate(database);
 	}
 
-	public long createStudent(Student student) {
-		SQLiteDatabase database = this.getWritableDatabase();
-
+	public boolean createStudent(Student student) {
 		ContentValues values = new ContentValues();
+
 		values.put(KEY_STUDENT_ID, student.getStudentID());
 		values.put(KEY_STUDENT_CARD_SN, student.getCardSN());
 		values.put(KEY_CREATED_AT, student.getCreatedAt());
 		values.put(KEY_UPDATED_AT, student.getUpdatedAt());
 
-		long student_id = database.insert(TABLE_STUDENTS, null, values);
+		SQLiteDatabase database = this.getWritableDatabase();
 
-		closeDB();
+		boolean result = database.insert(TABLE_STUDENTS, null, values) > 0;
+		database.close();
 
-		return student_id;
+		return result;
 	}
 
 	public Student getStudent(String student_id, String card_sn) {
 		Student student = null;
-		SQLiteDatabase database = this.getReadableDatabase();
 		String where = KEY_STUDENT_CARD_SN + " = '" + card_sn + "'";
 
 		if (student_id != null && card_sn != null) {
@@ -78,9 +75,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			where = KEY_ID + " = " + student_id;
 		}
 
-		String selectQuery = "SELECT * FROM " + TABLE_STUDENTS + " WHERE " + where;
-
-		Cursor cursor = database.rawQuery(selectQuery, null);
+		SQLiteDatabase database = this.getReadableDatabase();
+		Cursor cursor = database.rawQuery("SELECT * FROM " + TABLE_STUDENTS + " WHERE " + where, null);
 
 		if (cursor.moveToFirst()) {
 			student = new Student();
@@ -92,16 +88,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		}
 
 		cursor.close();
-		closeDB();
+		database.close();
 
 		return student;
 	}
 
+	public boolean updateStudent(Student student) {
+		ContentValues values = new ContentValues();
+
+		values.put(KEY_STUDENT_ID, student.getStudentID());
+		values.put(KEY_STUDENT_CARD_SN, student.getCardSN());
+		values.put(KEY_CREATED_AT, student.getCreatedAt());
+		values.put(KEY_UPDATED_AT, student.getUpdatedAt());
+
+		SQLiteDatabase database = this.getWritableDatabase();
+
+		boolean result = database.update(TABLE_STUDENTS, values, KEY_ID + " = ?", new String[]{ Integer.toString(student.getID()) }) > 0;
+		database.close();
+
+		return result;
+	}
+
 	public List<Student> getAllStudents() {
 		List<Student> students = new ArrayList<Student>();
-		String selectQuery = "SELECT * FROM " + TABLE_STUDENTS;
+
 		SQLiteDatabase database = this.getReadableDatabase();
-		Cursor cursor = database.rawQuery(selectQuery, null);
+		Cursor cursor = database.rawQuery("SELECT * FROM " + TABLE_STUDENTS, null);
 
 		if (cursor.moveToFirst()) {
 			do {
@@ -117,7 +129,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		}
 
 		cursor.close();
-		closeDB();
+		database.close();
 
 		return students;
 	}
@@ -138,11 +150,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public void resetDB() {
 		SQLiteDatabase database = this.getWritableDatabase();
 		database.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME = '" + TABLE_STUDENTS + "'");
-	}
-
-	public void closeDB() {
-		SQLiteDatabase database = this.getReadableDatabase();
-		if (database != null && database.isOpen()) database.close();
 	}
 
 	public String getDateTime() {
