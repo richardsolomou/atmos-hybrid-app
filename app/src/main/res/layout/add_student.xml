@@ -31,7 +31,7 @@
 	<EditText
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:inputType="text"
+		android:inputType="number"
 		android:ems="10"
 		android:id="@+id/studentID"
 		android:layout_marginTop="5dp"
@@ -41,7 +41,7 @@
 		android:layout_alignRight="@+id/relativeLayout"
 		android:layout_alignEnd="@+id/relativeLayout"
 		android:imeOptions="actionDone"
-		android:hint="up630745">
+		android:hint="630745">
 
 		<requestFocus/>
 	</EditText>
@@ -49,7 +49,7 @@
 	<RelativeLayout
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-		android:layout_marginTop="130dp"
+		android:layout_marginTop="170dp"
 		android:gravity="center"
 		android:id="@+id/relativeLayout">
 

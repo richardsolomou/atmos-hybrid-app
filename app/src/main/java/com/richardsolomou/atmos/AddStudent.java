@@ -23,6 +23,7 @@ public class AddStudent extends Activity {
 	EditText studentID;
 	Button btnAdd;
 	String cardSN;
+	int id_length = 6;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -43,8 +44,8 @@ public class AddStudent extends Activity {
 				if (i == EditorInfo.IME_ACTION_DONE) {
 					String id = studentID.getText().toString();
 
-					if (id == null || id.length() < 8) {
-						studentID.setError("Student ID must be 8 characters or more.");
+					if (id == null || id.length() < id_length) {
+						studentID.setError("Student ID must be " + id_length + " characters or more.");
 					} else {
 						addStudent(textView);
 						handled = true;
@@ -59,8 +60,8 @@ public class AddStudent extends Activity {
 			@Override
 			public void onClick(View view) {
 				String id = studentID.getText().toString();
-				if (id == null || id.length() < 8) {
-					studentID.setError("Student ID must be 8 characters or more.");
+				if (id == null || id.length() < id_length) {
+					studentID.setError("Student ID must be " + id_length + " characters or more.");
 				} else {
 					addStudent(view);
 				}
@@ -76,10 +77,10 @@ public class AddStudent extends Activity {
 		student.setCreatedAt(db.getDateTime());
 		student.setUpdatedAt(db.getDateTime());
 
-		long student_id = db.createStudent(student);
+		boolean createStudent = db.createStudent(student);
 
-		if (Long.toString(student_id) != null) {
-			Toast.makeText(getApplicationContext(), "Student " + studentID.getText().toString() + " was successfully added to the database.", Toast.LENGTH_SHORT).show();
+		if (createStudent) {
+			Toast.makeText(getApplicationContext(), "Student " + student.getStudentID() + " was successfully added to the database.", Toast.LENGTH_SHORT).show();
 			Intent objIntent = new Intent(getApplicationContext(), MainActivity.class);
 			startActivity(objIntent);
 		} else {

@@ -11,17 +11,6 @@ public class Student {
 	public Student() {
 	}
 
-	public Student(String student_id, String card_sn) {
-		this.student_id = student_id;
-		this.card_sn = card_sn;
-	}
-
-	public Student(int id, String student_id, String card_sn) {
-		this.id = id;
-		this.student_id = student_id;
-		this.card_sn = card_sn;
-	}
-
 	public void setID(int id) {
 		this.id = id;
 	}
