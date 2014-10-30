@@ -63,7 +63,7 @@ public class LoadingScreen extends Activity {
 		protected void onPostExecute(Void result) {
 			progressDialog.dismiss();
 
-			Intent objIntent = new Intent(getApplicationContext(), MainActivity.class);
+			Intent objIntent = new Intent(getApplicationContext(), SignInActivity.class);
 			startActivity(objIntent);
 		}
 
