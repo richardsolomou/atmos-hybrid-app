@@ -17,7 +17,7 @@ import java.util.Locale;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-	private static final int DATABASE_VERSION = 5;
+	private static final int DATABASE_VERSION = 6;
 
 	private static final String DATABASE_NAME = "atmos";
 
@@ -28,7 +28,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private static final String KEY_UPDATED_AT = "updated_at";
 
 	private static final String KEY_STUDENT_ID = "student_id";
-	private static final String KEY_STUDENT_CARD_SN = "card_sn";
+	private static final String KEY_STUDENT_UID = "uid";
 
 	public DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -38,7 +38,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase database) {
 		database.execSQL("CREATE TABLE " + TABLE_STUDENTS + "(" + KEY_ID
 				+ " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_STUDENT_ID + " TEXT,"
-				+ KEY_STUDENT_CARD_SN + " TEXT," + KEY_CREATED_AT + " DATETIME," + KEY_UPDATED_AT
+				+ KEY_STUDENT_UID + " TEXT," + KEY_CREATED_AT + " DATETIME," + KEY_UPDATED_AT
 				+ " DATETIME" + ")");
 	}
 
@@ -53,7 +53,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		ContentValues values = new ContentValues();
 
 		values.put(KEY_STUDENT_ID, student.getStudentID());
-		values.put(KEY_STUDENT_CARD_SN, student.getCardSN());
+		values.put(KEY_STUDENT_UID, student.getUID());
 		values.put(KEY_CREATED_AT, student.getCreatedAt());
 		values.put(KEY_UPDATED_AT, student.getUpdatedAt());
 
@@ -65,12 +65,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return result;
 	}
 
-	public Student getStudent(String student_id, String card_sn) {
+	public Student getStudent(String student_id, String uid) {
 		Student student = null;
-		String where = KEY_STUDENT_CARD_SN + " = '" + card_sn + "'";
+		String where = KEY_STUDENT_UID + " = '" + uid + "'";
 
-		if (student_id != null && card_sn != null) {
-			where = KEY_ID + " = " + student_id + " AND " + KEY_STUDENT_CARD_SN + " = '" + card_sn + "'";
+		if (student_id != null && uid != null) {
+			where = KEY_ID + " = " + student_id + " AND " + KEY_STUDENT_UID + " = '" + uid + "'";
 		} else if (student_id != null) {
 			where = KEY_ID + " = " + student_id;
 		}
@@ -82,7 +82,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			student = new Student();
 			student.setID(cursor.getInt(cursor.getColumnIndex(KEY_ID)));
 			student.setStudentID(cursor.getString(cursor.getColumnIndex(KEY_STUDENT_ID)));
-			student.setCardSN(cursor.getString(cursor.getColumnIndex(KEY_STUDENT_CARD_SN)));
+			student.setUID(cursor.getString(cursor.getColumnIndex(KEY_STUDENT_UID)));
 			student.setCreatedAt(cursor.getString(cursor.getColumnIndex(KEY_CREATED_AT)));
 			student.setUpdatedAt(cursor.getString(cursor.getColumnIndex(KEY_UPDATED_AT)));
 		}
@@ -97,7 +97,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		ContentValues values = new ContentValues();
 
 		values.put(KEY_STUDENT_ID, student.getStudentID());
-		values.put(KEY_STUDENT_CARD_SN, student.getCardSN());
+		values.put(KEY_STUDENT_UID, student.getUID());
 		values.put(KEY_CREATED_AT, student.getCreatedAt());
 		values.put(KEY_UPDATED_AT, student.getUpdatedAt());
 
@@ -120,7 +120,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				Student student = new Student();
 				student.setID(cursor.getInt(cursor.getColumnIndex(KEY_ID)));
 				student.setStudentID(cursor.getString(cursor.getColumnIndex(KEY_STUDENT_ID)));
-				student.setCardSN(cursor.getString(cursor.getColumnIndex(KEY_STUDENT_CARD_SN)));
+				student.setUID(cursor.getString(cursor.getColumnIndex(KEY_STUDENT_UID)));
 				student.setCreatedAt(cursor.getString(cursor.getColumnIndex(KEY_CREATED_AT)));
 				student.setUpdatedAt(cursor.getString(cursor.getColumnIndex(KEY_UPDATED_AT)));
 

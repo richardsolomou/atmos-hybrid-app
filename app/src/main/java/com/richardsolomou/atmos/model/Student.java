@@ -4,7 +4,7 @@ public class Student {
 
 	int id;
 	String student_id;
-	String card_sn;
+	String uid;
 	String created_at;
 	String updated_at;
 
@@ -19,8 +19,8 @@ public class Student {
 		this.student_id = student_id;
 	}
 
-	public void setCardSN(String card_sn) {
-		this.card_sn = card_sn;
+	public void setUID(String uid) {
+		this.uid = uid;
 	}
 
 	public void setCreatedAt(String created_at) {
@@ -39,8 +39,8 @@ public class Student {
 		return this.student_id;
 	}
 
-	public String getCardSN() {
-		return this.card_sn;
+	public String getUID() {
+		return this.uid;
 	}
 
 	public String getCreatedAt() {
