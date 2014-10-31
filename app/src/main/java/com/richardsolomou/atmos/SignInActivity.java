@@ -12,11 +12,11 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_signin);
 
-		findViewById(R.id.btn_sign_in).setOnClickListener(this);
+		findViewById(R.id.btnSignIn).setOnClickListener(this);
 	}
 
 	public void onClick(View view) {
-		if (view.getId() == R.id.btn_sign_in && !mGoogleApiClient.isConnecting()) {
+		if (view.getId() == R.id.btnSignIn && !mGoogleApiClient.isConnecting()) {
 			mSignInClicked = true;
 			resolveSignInError();
 		}
