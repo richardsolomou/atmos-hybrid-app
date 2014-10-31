@@ -20,7 +20,6 @@ public class AddStudentActivity extends BaseActivity {
 
 	private DatabaseHelper db;
 	private EditText etStudentID;
-	private Button btnAdd;
 	private String uid;
 	private int id_length = 6;
 
@@ -33,7 +32,7 @@ public class AddStudentActivity extends BaseActivity {
 		uid = getIntent().getStringExtra("uid");
 
 		etStudentID = (EditText) findViewById(R.id.etStudentID);
-		btnAdd = (Button) findViewById(R.id.btnAdd);
+		Button btnAdd = (Button) findViewById(R.id.btnAdd);
 
 		etStudentID.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 			@Override
