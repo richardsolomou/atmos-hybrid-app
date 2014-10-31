@@ -20,7 +20,6 @@ public abstract class BaseActivity extends Activity implements GoogleApiClient.C
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_signin);
 
 		mGoogleApiClient = new GoogleApiClient.Builder(this)
 				.addConnectionCallbacks(this)
