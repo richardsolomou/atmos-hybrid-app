@@ -30,7 +30,7 @@
 		android:layout_height="wrap_content"
 		android:inputType="number"
 		android:ems="10"
-		android:id="@+id/studentID"
+		android:id="@+id/etStudentID"
 		android:layout_marginTop="5dp"
 		android:layout_below="@+id/text2"
 		android:layout_alignParentLeft="true"

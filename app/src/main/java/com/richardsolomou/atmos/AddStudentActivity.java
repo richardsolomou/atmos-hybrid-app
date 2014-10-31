@@ -1,6 +1,5 @@
 package com.richardsolomou.atmos;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -17,35 +16,35 @@ import com.richardsolomou.atmos.helper.DatabaseHelper;
 import com.richardsolomou.atmos.model.Student;
 
 
-public class AddStudent extends Activity {
+public class AddStudentActivity extends BaseActivity {
 
-	DatabaseHelper db;
-	EditText studentID;
-	Button btnAdd;
-	String cardSN;
-	int id_length = 6;
+	private DatabaseHelper db;
+	private EditText etStudentID;
+	private Button btnAdd;
+	private String uid;
+	private int id_length = 6;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.add_student);
+		setContentView(R.layout.activity_addstudent);
 
 		db = new DatabaseHelper(getApplicationContext());
-		cardSN = getIntent().getStringExtra("cardSN");
+		uid = getIntent().getStringExtra("uid");
 
-		studentID = (EditText) findViewById(R.id.studentID);
+		etStudentID = (EditText) findViewById(R.id.etStudentID);
 		btnAdd = (Button) findViewById(R.id.btnAdd);
 
-		studentID.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+		etStudentID.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 			@Override
 			public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
 				boolean handled = false;
 
 				if (i == EditorInfo.IME_ACTION_DONE) {
-					String id = studentID.getText().toString();
+					String id = etStudentID.getText().toString();
 
 					if (id == null || id.length() < id_length) {
-						studentID.setError("Student ID must be " + id_length + " characters or more.");
+						etStudentID.setError("Student ID must be " + id_length + " characters or more.");
 					} else {
 						addStudent(textView);
 						handled = true;
@@ -59,9 +58,9 @@ public class AddStudent extends Activity {
 		btnAdd.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				String id = studentID.getText().toString();
+				String id = etStudentID.getText().toString();
 				if (id == null || id.length() < id_length) {
-					studentID.setError("Student ID must be " + id_length + " characters or more.");
+					etStudentID.setError("Student ID must be " + id_length + " characters or more.");
 				} else {
 					addStudent(view);
 				}
@@ -72,8 +71,8 @@ public class AddStudent extends Activity {
 	public void addStudent(View view) {
 		Student student = new Student();
 
-		student.setStudentID(studentID.getText().toString());
-		student.setCardSN(cardSN);
+		student.setStudentID(etStudentID.getText().toString());
+		student.setUID(uid);
 		student.setCreatedAt(db.getDateTime());
 		student.setUpdatedAt(db.getDateTime());
 

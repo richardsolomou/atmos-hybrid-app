@@ -17,7 +17,7 @@
 		android:textAppearance="?android:attr/textAppearanceMedium"/>
 
 	<TextView
-		android:id="@+id/card_sn"
+		android:id="@+id/tvUID"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_below="@+id/text1"
