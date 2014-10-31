@@ -1,7 +1,7 @@
 package com.richardsolomou.atmos;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -22,11 +22,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 // Database helper and models
+import com.google.android.gms.plus.Plus;
+import com.google.android.gms.plus.model.people.Person;
 import com.richardsolomou.atmos.helper.DatabaseHelper;
 import com.richardsolomou.atmos.model.Student;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends BaseActivity {
 
 	DatabaseHelper db;
 	TextView card_sn;
@@ -54,11 +56,29 @@ public class MainActivity extends Activity {
 		card_sn = ((TextView) findViewById(R.id.card_sn));
 	}
 
+	public void onConnected(Bundle connectionHint) {
+		try {
+			if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
+				Person currentPerson = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
+				String personName = currentPerson.getDisplayName();
+				String personPhoto = currentPerson.getImage().getUrl();
+				String personProfile = currentPerson.getUrl();
+				String personEmail = Plus.AccountApi.getAccountName(mGoogleApiClient);
+
+				Log.e("TAG", "Name: " + personName + ", Profile: " + personProfile + ", Email: " + personEmail + ", Photo: " + personPhoto);
+			} else {
+				Toast.makeText(getApplicationContext(), "Person information is null", Toast.LENGTH_LONG).show();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	@Override
 	protected void onResume() {
 		super.onResume();
 		// Create pending intent.
-		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
 		// Create intent receiver for NFC events.
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(NfcAdapter.ACTION_TAG_DISCOVERED);
