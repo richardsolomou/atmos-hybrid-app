@@ -30,8 +30,8 @@ import com.richardsolomou.atmos.model.Student;
 
 public class MainActivity extends BaseActivity {
 
-	DatabaseHelper db;
-	TextView card_sn;
+	private DatabaseHelper db;
+	private TextView card_sn;
 
 	// List of NFC technologies.
 	private final String[][] techList = new String[][]{
@@ -64,6 +64,8 @@ public class MainActivity extends BaseActivity {
 				String personPhoto = currentPerson.getImage().getUrl();
 				String personProfile = currentPerson.getUrl();
 				String personEmail = Plus.AccountApi.getAccountName(mGoogleApiClient);
+
+				personPhoto = personPhoto.substring(0, personPhoto.length() - 2) + 150;
 
 				Log.e("TAG", "Name: " + personName + ", Profile: " + personProfile + ", Email: " + personEmail + ", Photo: " + personPhoto);
 			} else {
