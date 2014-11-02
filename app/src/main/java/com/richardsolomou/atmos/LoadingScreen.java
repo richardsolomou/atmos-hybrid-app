@@ -65,6 +65,7 @@ public class LoadingScreen extends Activity {
 
 			Intent objIntent = new Intent(getApplicationContext(), SignInActivity.class);
 			startActivity(objIntent);
+			finish();
 		}
 
 	}

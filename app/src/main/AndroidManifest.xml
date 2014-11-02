@@ -27,8 +27,7 @@
 
 		<activity
 			android:name=".LoadingScreen"
-			android:label="@string/app_name"
-			android:excludeFromRecents="true">
+			android:label="@string/app_name">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN"/>
 				<category android:name="android.intent.category.LAUNCHER"/>
@@ -37,8 +36,7 @@
 		<activity
 			android:name=".SignInActivity"
 			android:label="@string/app_name"
-			android:configChanges="orientation|keyboardHidden|screenSize"
-			android:excludeFromRecents="true">
+			android:configChanges="orientation|keyboardHidden|screenSize">
 		</activity>
 		<activity
 			android:name=".MainActivity"
@@ -49,8 +47,7 @@
 			android:name=".AddStudentActivity"
 			android:label="Add Student"
 			android:configChanges="orientation|keyboardHidden|screenSize"
-			android:windowSoftInputMode="stateVisible"
-			android:noHistory="true">
+			android:windowSoftInputMode="stateVisible">
 		</activity>
 	</application>
 

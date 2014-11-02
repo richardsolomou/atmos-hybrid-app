@@ -26,6 +26,7 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
 		Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show();
 		Intent intent = new Intent(getApplicationContext(), MainActivity.class);
 		startActivity(intent);
+		finish();
 	}
 
 }
