@@ -4,11 +4,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-
-// NFC reader dependencies
+import android.widget.TextView;
+import android.widget.Toast;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentFilter;
+
+
+// NFC reader dependencies
 import android.nfc.NfcAdapter;
 import android.nfc.tech.IsoDep;
 import android.nfc.tech.MifareClassic;
@@ -18,8 +21,6 @@ import android.nfc.tech.NfcA;
 import android.nfc.tech.NfcB;
 import android.nfc.tech.NfcF;
 import android.nfc.tech.NfcV;
-import android.widget.TextView;
-import android.widget.Toast;
 
 // Database helper and models
 import com.google.android.gms.plus.Plus;
@@ -130,10 +131,11 @@ public class MainActivity extends BaseActivity {
 		return new String(hexChars);
 	}
 
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
+		getMenuInflater().inflate(R.menu.menu_main, menu);
 		return true;
 	}
 
@@ -143,7 +145,12 @@ public class MainActivity extends BaseActivity {
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		return id == R.id.action_settings || super.onOptionsItemSelected(item);
-	}
 
+		//noinspection SimplifiableIfStatement
+		if (id == R.id.action_settings) {
+			return true;
+		}
+
+		return super.onOptionsItemSelected(item);
+	}
 }
