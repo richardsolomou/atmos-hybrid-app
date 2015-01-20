@@ -7,6 +7,10 @@
     <!-- Permission for connecting to the Internet -->
     <uses-permission android:name="android.permission.INTERNET"/>
 
+    <!-- Permission for checking Wi-Fi state -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+
     <!-- Permissions for Google Play Services -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
     <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
@@ -26,8 +30,9 @@
             android:value="@integer/google_play_services_version"/>
 
         <activity
-            android:name=".LoadingScreen"
-            android:label="@string/app_name">
+            android:name=".SignInActivity"
+            android:label="@string/app_name"
+            android:configChanges="orientation|keyboardHidden|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -35,20 +40,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SignInActivity"
-            android:label="@string/app_name"
-            android:configChanges="orientation|keyboardHidden|screenSize">
-        </activity>
-        <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:configChanges="orientation|keyboardHidden|screenSize">
-        </activity>
-        <activity
-            android:name=".AddStudentActivity"
-            android:label="Add Student"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:windowSoftInputMode="stateVisible">
         </activity>
     </application>
 
