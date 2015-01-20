@@ -35,7 +35,7 @@ public class MainActivity extends BaseActivity {
 	WebView webView;
 
 	/**
-	 * List of NFC technologies.
+	 * NFC technologies.
 	 */
 	private final String[][] techList = new String[][]{
 			new String[]{
