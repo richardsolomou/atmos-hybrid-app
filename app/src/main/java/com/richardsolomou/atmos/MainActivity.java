@@ -1,17 +1,11 @@
 package com.richardsolomou.atmos;
 
-import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.TextView;
-import android.widget.Toast;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentFilter;
-
-
-// NFC reader dependencies
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.nfc.tech.IsoDep;
 import android.nfc.tech.MifareClassic;
@@ -21,20 +15,28 @@ import android.nfc.tech.NfcA;
 import android.nfc.tech.NfcB;
 import android.nfc.tech.NfcF;
 import android.nfc.tech.NfcV;
+import android.os.Bundle;
+import android.view.KeyEvent;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.Toast;
 
-// Database helper and models
-import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
-import com.richardsolomou.atmos.helper.DatabaseHelper;
-import com.richardsolomou.atmos.model.Student;
+import com.google.android.gms.plus.Plus;
 
 
 public class MainActivity extends BaseActivity {
 
-	private DatabaseHelper db;
-	private TextView tvUID;
+	String protocol = "http://";
+	String hostName = "www2.richardsolomou.com";
+	String homePage = "/atmos";
+	String objectName = "ATMOS";
+	WebView webView;
 
-	// List of NFC technologies.
+	/**
+	 * List of NFC technologies.
+	 */
 	private final String[][] techList = new String[][]{
 			new String[]{
 					NfcA.class.getName(),
@@ -48,13 +50,83 @@ public class MainActivity extends BaseActivity {
 			}
 	};
 
+	/**
+	 * Set the hexadecimal values in an array.
+	 */
+	final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
+
+	// Method to convert the byte array to hexadecimal.
+	public static String bytesToHex(byte[] bytes) {
+		char[] hexChars = new char[bytes.length * 2];
+		for (int j = 0; j < bytes.length; j++) {
+			int v = bytes[j] & 0xFF;
+			hexChars[j * 2] = hexArray[v >>> 4];
+			hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+		}
+		return new String(hexChars);
+	}
+
+	private boolean isNetworkAvailable() {
+		ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+		NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+		return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+	}
+
+	private class MyWebViewClient extends WebViewClient {
+		@Override
+		public boolean shouldOverrideUrlLoading(WebView view, String url) {
+			if (Uri.parse(url).getHost().equals(hostName)) {
+				return false;
+			}
+			Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+			startActivity(intent);
+			return true;
+		}
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		db = new DatabaseHelper(getApplicationContext());
-		tvUID = ((TextView) findViewById(R.id.tvUID));
+		webView = (WebView) findViewById(R.id.webview);
+
+		webView.getSettings().setAppCachePath(getApplicationContext().getCacheDir().getAbsolutePath());
+		webView.getSettings().setAllowFileAccess(true);
+		webView.getSettings().setAppCacheEnabled(true);
+		webView.getSettings().setJavaScriptEnabled(true);
+		webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
+
+		if (!isNetworkAvailable()) {
+			webView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+		}
+
+		webView.loadUrl(protocol + hostName + homePage);
+		webView.addJavascriptInterface(new WebAppInterface(this), objectName);
+		webView.setWebViewClient(new MyWebViewClient());
+		/**
+		 * TODO: Send device data to JavaScript.
+		 */
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		WebView myWebView = (WebView) findViewById(R.id.webview);
+		if ((keyCode == KeyEvent.KEYCODE_BACK) && myWebView.canGoBack()) {
+			myWebView.goBack();
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+
+	@Override
+	protected void onNewIntent(Intent intent) {
+		if (intent.getAction().equals(NfcAdapter.ACTION_TAG_DISCOVERED)) {
+			String uid = bytesToHex(intent.getByteArrayExtra(NfcAdapter.EXTRA_ID));
+			/**
+			 * TODO: Send UID to JavaScript.
+			 */
+		}
 	}
 
 	public void onConnected(Bundle connectionHint) {
@@ -65,10 +137,10 @@ public class MainActivity extends BaseActivity {
 				String personPhoto = currentPerson.getImage().getUrl();
 				String personProfile = currentPerson.getUrl();
 				String personEmail = Plus.AccountApi.getAccountName(mGoogleApiClient);
-
 				personPhoto = personPhoto.substring(0, personPhoto.length() - 2) + 150;
-
-				Log.e("TAG", "Name: " + personName + ", Profile: " + personProfile + ", Email: " + personEmail + ", Photo: " + personPhoto);
+				/**
+				 * TODO: Send user data to JavaScript.
+				 */
 			} else {
 				Toast.makeText(getApplicationContext(), "Person information is null", Toast.LENGTH_LONG).show();
 			}
@@ -98,59 +170,5 @@ public class MainActivity extends BaseActivity {
 		// Disable foreground dispatch.
 		NfcAdapter mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
 		mNfcAdapter.disableForegroundDispatch(this);
-	}
-
-	@Override
-	protected void onNewIntent(Intent intent) {
-		if (intent.getAction().equals(NfcAdapter.ACTION_TAG_DISCOVERED)) {
-			String uid = bytesToHex(intent.getByteArrayExtra(NfcAdapter.EXTRA_ID));
-			Student student = db.getStudent(null, uid);
-
-			if (student != null) {
-				tvUID.setText(uid);
-				Toast.makeText(getApplicationContext(), "Student with ID " + student.getStudentID() + " was matched.", Toast.LENGTH_SHORT).show();
-			} else {
-				Intent objIntent = new Intent(getApplicationContext(), AddStudentActivity.class);
-				objIntent.putExtra("uid", uid);
-				startActivity(objIntent);
-			}
-		}
-	}
-
-	// Set the hexadecimal values in an array.
-	final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
-
-	// Method to convert the byte array to hexadecimal.
-	public static String bytesToHex(byte[] bytes) {
-		char[] hexChars = new char[bytes.length * 2];
-		for (int j = 0; j < bytes.length; j++) {
-			int v = bytes[j] & 0xFF;
-			hexChars[j * 2] = hexArray[v >>> 4];
-			hexChars[j * 2 + 1] = hexArray[v & 0x0F];
-		}
-		return new String(hexChars);
-	}
-
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.menu_main, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-
-		//noinspection SimplifiableIfStatement
-		if (id == R.id.action_settings) {
-			return true;
-		}
-
-		return super.onOptionsItemSelected(item);
 	}
 }
