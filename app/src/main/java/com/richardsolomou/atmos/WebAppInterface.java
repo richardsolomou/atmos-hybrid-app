@@ -17,7 +17,7 @@ public class WebAppInterface {
 	/**
 	 * Sets the context variable.
 	 */
-	Context mContext;
+	private Context mContext;
 
 	/**
 	 * Instantiates a new web application interface.
