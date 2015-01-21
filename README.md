@@ -1,7 +1,6 @@
-ATMOS: NFC-Assisted Attendance Monitoring
-=========================================
+## ATMOS: NFC-Assisted Attendance Monitoring
 
-The application developed in this repository is part of the final year project that I'm currently undertaking at the University of Portsmouth. The aim of this project is to create an advanced attendance monitoring system for lecturers that takes advantage of NFC technology.
+The application developed in this repository is part of the final year project that I'm currently undertaking at the University of Portsmouth.
 
 > Determining student attendance in lectures is one of the most time-consuming processes at institutions around the UK. The computerisation of this process has been attempted many times both internally and in past literature, but has not managed to achieve the speed provided by its paper alternative as of yet. With the introduction of technologies such as RFID and NFC, door scanners have been installed in a large group of universities, granting access only to students with valid student cards.
 
