@@ -17,6 +17,9 @@ import android.nfc.tech.NfcF;
 import android.nfc.tech.NfcV;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -128,8 +131,7 @@ public class MainActivity extends BaseActivity {
 	}
 
 	/**
-	 * Initialises the activity, configures the WebView client and directs the user to the web
-	 * application.
+	 * Initialises the activity.
 	 *
 	 * @param savedInstanceState the saved instance state
 	 */
@@ -138,6 +140,13 @@ public class MainActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+		activateWebView();
+	}
+
+	/**
+	 * Configures the WebView client and directs the user to the web application.
+	 */
+	protected void activateWebView() {
 		webView = (WebView) findViewById(R.id.webview);
 
 		webView.getSettings().setAppCachePath(getApplicationContext().getCacheDir().getAbsolutePath());
@@ -157,6 +166,36 @@ public class MainActivity extends BaseActivity {
 		/**
 		 * TODO: Send device data to JavaScript.
 		 */
+	}
+
+	/**
+	 * Inflates the menu items for use in the action bar.
+	 *
+	 * @param menu the menu
+	 * @return true if the operation was successful, false otherwise
+	 */
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.main_activity_actions, menu);
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	/**
+	 * Handles presses on the action bar items.
+	 *
+	 * @param item the pressed item
+	 * @return true if the refresh button was pressed, false otherwise
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case R.id.refresh:
+				activateWebView();
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
+		}
 	}
 
 	/**
