@@ -128,6 +128,12 @@ public class MainActivity extends BaseActivity {
 
 			return true;
 		}
+
+		@Override
+		public void onPageFinished(WebView view, String url) {
+			super.onPageFinished(view, url);
+			view.clearCache(true);
+		}
 	}
 
 	/**
@@ -140,13 +146,13 @@ public class MainActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		activateWebView();
+		activateWebView(null);
 	}
 
 	/**
 	 * Configures the WebView client and directs the user to the web application.
 	 */
-	protected void activateWebView() {
+	protected void activateWebView(String url) {
 		webView = (WebView) findViewById(R.id.webview);
 
 		webView.getSettings().setAppCachePath(getApplicationContext().getCacheDir().getAbsolutePath());
@@ -159,7 +165,11 @@ public class MainActivity extends BaseActivity {
 			webView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
 		}
 
-		webView.loadUrl(protocol + hostName + homePage);
+		if (url == null) {
+			url = protocol + hostName + homePage;
+		}
+
+		webView.loadUrl(url);
 		webView.addJavascriptInterface(new WebAppInterface(this), objectName);
 		webView.setWebViewClient(new MyWebViewClient());
 
@@ -191,7 +201,7 @@ public class MainActivity extends BaseActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.refresh:
-				activateWebView();
+				webView.loadUrl("javascript:window.location.reload(true)");
 				return true;
 			default:
 				return super.onOptionsItemSelected(item);
@@ -224,6 +234,9 @@ public class MainActivity extends BaseActivity {
 	protected void onNewIntent(Intent intent) {
 		if (intent.getAction().equals(NfcAdapter.ACTION_TAG_DISCOVERED)) {
 			String uid = bytesToHex(intent.getByteArrayExtra(NfcAdapter.EXTRA_ID));
+
+			webView.loadUrl("javascript:getSerialNumber('" + uid + "')");
+
 
 			/**
 			 * TODO: Send UID to JavaScript.
