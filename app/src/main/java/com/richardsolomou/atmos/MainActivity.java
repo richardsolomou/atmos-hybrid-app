@@ -114,30 +114,7 @@ public class MainActivity extends BaseActivity {
 	}
 
 	/**
-	 * Extends a WebView client and overrides on links outside the hostname.
-	 */
-	private class MyWebViewClient extends WebViewClient {
-		@Override
-		public boolean shouldOverrideUrlLoading(WebView view, String url) {
-			if (Uri.parse(url).getHost().equals(hostName)) {
-				return false;
-			}
-
-			Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-			startActivity(intent);
-
-			return true;
-		}
-
-		@Override
-		public void onPageFinished(WebView view, String url) {
-			super.onPageFinished(view, url);
-			view.clearCache(true);
-		}
-	}
-
-	/**
-	 * Initialises the activity.
+	 * Initialises the activity, configures the WebView client and directs the user to the web application.
 	 *
 	 * @param savedInstanceState the saved instance state
 	 */
@@ -146,13 +123,6 @@ public class MainActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		activateWebView(null);
-	}
-
-	/**
-	 * Configures the WebView client and directs the user to the web application.
-	 */
-	protected void activateWebView(String url) {
 		webView = (WebView) findViewById(R.id.webview);
 
 		webView.getSettings().setAppCachePath(getApplicationContext().getCacheDir().getAbsolutePath());
@@ -160,22 +130,33 @@ public class MainActivity extends BaseActivity {
 		webView.getSettings().setAppCacheEnabled(true);
 		webView.getSettings().setJavaScriptEnabled(true);
 		webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
+		webView.setWebContentsDebuggingEnabled(true);
 
 		if (!isNetworkAvailable()) {
 			webView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
 		}
 
-		if (url == null) {
-			url = protocol + hostName + homePage;
-		}
-
-		webView.loadUrl(url);
+		webView.loadUrl(protocol + hostName + homePage);
 		webView.addJavascriptInterface(new WebAppInterface(this), objectName);
-		webView.setWebViewClient(new MyWebViewClient());
+		webView.setWebViewClient(new WebViewClient() {
+			@Override
+			public boolean shouldOverrideUrlLoading(WebView view, String url) {
+				if (Uri.parse(url).getHost().equals(hostName)) {
+					return false;
+				}
 
-		/**
-		 * TODO: Send device data to JavaScript.
-		 */
+				Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+				startActivity(intent);
+
+				return true;
+			}
+
+			@Override
+			public void onPageFinished(WebView view, String url) {
+				super.onPageFinished(view, url);
+				view.clearCache(true);
+			}
+		});
 	}
 
 	/**
@@ -236,11 +217,6 @@ public class MainActivity extends BaseActivity {
 			String uid = bytesToHex(intent.getByteArrayExtra(NfcAdapter.EXTRA_ID));
 
 			webView.loadUrl("javascript:getSerialNumber('" + uid + "')");
-
-
-			/**
-			 * TODO: Send UID to JavaScript.
-			 */
 		}
 	}
 
@@ -252,16 +228,37 @@ public class MainActivity extends BaseActivity {
 	public void onConnected(Bundle connectionHint) {
 		try {
 			if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
-				Person currentPerson = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
-				String personName = currentPerson.getDisplayName();
-				String personPhoto = currentPerson.getImage().getUrl();
-				String personProfile = currentPerson.getUrl();
-				String personEmail = Plus.AccountApi.getAccountName(mGoogleApiClient);
-				personPhoto = personPhoto.substring(0, personPhoto.length() - 2) + 150;
+				Person person = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
+				String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
+				String gender;
 
-				/**
-				 * TODO: Send user data to JavaScript.
-				 */
+				if (person.getGender() == 0) {
+					gender = "male";
+				} else {
+					gender = "female";
+				}
+
+				final String user = "{" +
+						"\"email\": \"" + email + "\"," +
+						"\"family_name\": \"" + person.getName().getFamilyName() + "\"," +
+						"\"gender\": \"" + gender + "\"," +
+						"\"given_name\": \"" + person.getName().getGivenName() + "\"," +
+						"\"id\": \"" + person.getId() + "\"," +
+						"\"link\": \"" + person.getUrl() + "\"," +
+						"\"locale\": \"" + person.getLanguage() + "\"," +
+						"\"name\": \"" + person.getDisplayName() + "\"," +
+						"\"picture\": \"" + person.getImage().getUrl().substring(0, person.getImage().getUrl().length() - 6) + "\"," +
+						"\"verified_email\": " + person.hasVerified() +
+						"}";
+
+				webView.setWebViewClient(new WebViewClient() {
+					@Override
+					public void onPageFinished(WebView view, String url) {
+						super.onPageFinished(view, url);
+						view.clearCache(true);
+						webView.loadUrl("javascript:deviceSignIn('" + user + "')");
+					}
+				});
 			} else {
 				Toast.makeText(getApplicationContext(), "Person information is empty", Toast.LENGTH_LONG).show();
 			}
