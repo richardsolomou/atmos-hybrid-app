@@ -216,7 +216,7 @@ public class MainActivity extends BaseActivity {
 		if (intent.getAction().equals(NfcAdapter.ACTION_TAG_DISCOVERED)) {
 			String uid = bytesToHex(intent.getByteArrayExtra(NfcAdapter.EXTRA_ID));
 
-			webView.loadUrl("javascript:getSerialNumber('" + uid + "')");
+			webView.loadUrl("javascript:requestRouter('RFIDRouter', { \"uid\": \"" + uid + "\" })");
 		}
 	}
 
@@ -256,7 +256,7 @@ public class MainActivity extends BaseActivity {
 					public void onPageFinished(WebView view, String url) {
 						super.onPageFinished(view, url);
 						view.clearCache(true);
-						webView.loadUrl("javascript:deviceSignIn('" + user + "')");
+						webView.loadUrl("javascript:requestRouter('SignInRouter', { \"user\": " + user + " })");
 					}
 				});
 			} else {
