@@ -64,6 +64,11 @@ public class MainActivity extends BaseActivity {
 	private WebView webView;
 
 	/**
+	 * The onConnected flag.
+	 */
+	private Boolean flag = false;
+
+	/**
 	 * The supported NFC technologies.
 	 */
 	private final String[][] techList = new String[][]{
@@ -226,44 +231,48 @@ public class MainActivity extends BaseActivity {
 	 * @param connectionHint the connection hint
 	 */
 	public void onConnected(Bundle connectionHint) {
-		try {
-			if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
-				Person person = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
-				String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
-				String gender;
+		if (!flag) {
+			try {
+				if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
+					Person person = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
+					String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
+					String gender;
 
-				if (person.getGender() == 0) {
-					gender = "male";
-				} else {
-					gender = "female";
-				}
-
-				final String user = "{" +
-						"\"email\": \"" + email + "\"," +
-						"\"family_name\": \"" + person.getName().getFamilyName() + "\"," +
-						"\"gender\": \"" + gender + "\"," +
-						"\"given_name\": \"" + person.getName().getGivenName() + "\"," +
-						"\"id\": \"" + person.getId() + "\"," +
-						"\"link\": \"" + person.getUrl() + "\"," +
-						"\"locale\": \"" + person.getLanguage() + "\"," +
-						"\"name\": \"" + person.getDisplayName() + "\"," +
-						"\"picture\": \"" + person.getImage().getUrl().substring(0, person.getImage().getUrl().length() - 6) + "\"," +
-						"\"verified_email\": " + person.hasVerified() +
-						"}";
-
-				webView.setWebViewClient(new WebViewClient() {
-					@Override
-					public void onPageFinished(WebView view, String url) {
-						super.onPageFinished(view, url);
-						view.clearCache(true);
-						webView.loadUrl("javascript:requestRouter('SignInRouter', { \"user\": " + user + " })");
+					if (person.getGender() == 0) {
+						gender = "male";
+					} else {
+						gender = "female";
 					}
-				});
-			} else {
-				Toast.makeText(getApplicationContext(), "Person information is empty", Toast.LENGTH_LONG).show();
+
+					final String user = "{" +
+							"\"email\": \"" + email + "\"," +
+							"\"family_name\": \"" + person.getName().getFamilyName() + "\"," +
+							"\"gender\": \"" + gender + "\"," +
+							"\"given_name\": \"" + person.getName().getGivenName() + "\"," +
+							"\"id\": \"" + person.getId() + "\"," +
+							"\"link\": \"" + person.getUrl() + "\"," +
+							"\"locale\": \"" + person.getLanguage() + "\"," +
+							"\"name\": \"" + person.getDisplayName() + "\"," +
+							"\"picture\": \"" + person.getImage().getUrl().substring(0, person.getImage().getUrl().length() - 6) + "\"," +
+							"\"verified_email\": " + person.hasVerified() +
+							"}";
+
+					flag = true;
+
+					webView.setWebViewClient(new WebViewClient() {
+						@Override
+						public void onPageFinished(WebView view, String url) {
+							super.onPageFinished(view, url);
+							view.clearCache(true);
+							webView.loadUrl("javascript:requestRouter('SignInRouter', { \"user\": " + user + " })");
+						}
+					});
+				} else {
+					Toast.makeText(getApplicationContext(), "Person information is empty", Toast.LENGTH_LONG).show();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 
